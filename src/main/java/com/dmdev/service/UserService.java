@@ -18,10 +18,10 @@ import static lombok.AccessLevel.PRIVATE;
 @RequiredArgsConstructor
 public class UserService {
 
-    private CreateUserValidator createUserValidator = CreateUserValidator.getInstance();
-    private  UserDao userDao = UserDao.getInstance();
-    private CreateUserMapper createUserMapper = CreateUserMapper.getInstance();
-    private UserMapper userMapper = UserMapper.getInstance();
+    private final CreateUserValidator createUserValidator;
+    private  final UserDao userDao;
+    private final CreateUserMapper createUserMapper;
+    private final UserMapper userMapper;
 
     public Optional<UserDto> login(String email, String password) {
         return userDao.findByEmailAndPassword(email, password)

@@ -5,7 +5,6 @@ import com.dmdev.entity.Gender;
 import com.dmdev.entity.Role;
 import com.dmdev.entity.User;
 import com.dmdev.integration.IntegrationTestBase;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,23 +15,19 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static com.dmdev.ObjectUtility.IVAN;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+
 public class UserDaoIT extends IntegrationTestBase {
 
-    private UserDao userDao = UserDao.getInstance();
-    private static final User IVAN = User.builder()
-            .id(1)
-            .birthday(LocalDate.of(1990, 01, 10))
-            .gender(Gender.MALE)
-            .role(Role.ADMIN)
-            .name("Ivan")
-            .email("ivan@gmail.com")
-            .password("111")
-            .build();
+    private final UserDao userDao = UserDao.getInstance();
 
     @Test
     @DisplayName("all users will be shown")
     void shouldReturnAllUsers() {
-        Assertions.assertThat(userDao.findAll()).hasSize(5);
+        assertThat(userDao.findAll()).hasSize(5);
     }
 
     @Test
@@ -40,7 +35,7 @@ public class UserDaoIT extends IntegrationTestBase {
     void shouldReturnUser() {
         Optional<User> optionalUser = userDao.findById(1);
 
-        Assertions.assertThat(optionalUser).isPresent();
+        assertThat(optionalUser).isPresent();
     }
 
     @Test
@@ -48,7 +43,7 @@ public class UserDaoIT extends IntegrationTestBase {
     void shouldReturnEmptyIfUserDoesntExist() {
         Optional<User> optionalUser = userDao.findById(10000);
 
-        Assertions.assertThat(optionalUser).isEmpty();
+        assertThat(optionalUser).isEmpty();
     }
 
     @Test
@@ -65,7 +60,7 @@ public class UserDaoIT extends IntegrationTestBase {
 
         User save = userDao.save(user);
 
-        Assertions.assertThat(save.getId()).isEqualTo(6);
+        assertNotNull(save.getId());
     }
 
     @Test
@@ -73,7 +68,8 @@ public class UserDaoIT extends IntegrationTestBase {
     void shouldFindExistingUser() {
         Optional<User> optionalUser = userDao.findByEmailAndPassword(IVAN.getEmail(), IVAN.getPassword());
 
-        Assertions.assertThat(optionalUser.get()).isEqualTo(IVAN);
+        assertThat(optionalUser).isPresent();
+        assertThat(optionalUser.get()).isEqualTo(IVAN);
     }
 
     @ParameterizedTest
@@ -82,12 +78,14 @@ public class UserDaoIT extends IntegrationTestBase {
     void shouldReturnEmptyIfWrongEmailOrPassword(String email, String password) {
         Optional<User> optionalUser = userDao.findByEmailAndPassword(email, password);
 
-        Assertions.assertThat(optionalUser).isEmpty();
+        assertThat(optionalUser).isEmpty();
     }
 
     static Stream<Arguments> getArgumentsForFindUser() {
         return Stream.of(
+                //return empty user because invalid email
                 Arguments.of("dummy", "111"),
+                //return emptu user because invalid password
                 Arguments.of("ivan@gmail.com", "dummy")
         );
     }
@@ -95,13 +93,13 @@ public class UserDaoIT extends IntegrationTestBase {
     @Test
     @DisplayName("user will be deleted")
     void shouldDeleteUser() {
-        Assertions.assertThat(userDao.delete(1)).isEqualTo(true);
+        assertThat(userDao.delete(IVAN.getId())).isEqualTo(true);
     }
 
     @Test
     @DisplayName("user won't be deleted if user doesn't exist")
     void shouldNotDeleteUserIfDoesntExist() {
-        Assertions.assertThat(userDao.delete(1000)).isEqualTo(false);
+        assertThat(userDao.delete(1000)).isEqualTo(false);
     }
 
     @Test
@@ -113,6 +111,6 @@ public class UserDaoIT extends IntegrationTestBase {
         userDao.update(user);
         User actualUser = userDao.findById(1).get();
 
-        Assertions.assertThat(actualUser.getName()).isEqualTo(user.getName());
+        assertThat(actualUser.getName()).isEqualTo(user.getName());
     }
 }

@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CreateUserValidatorTest {
 
-    private CreateUserValidator createUserValidator = CreateUserValidator.getInstance();
+    private final CreateUserValidator createUserValidator = CreateUserValidator.getInstance();
 
     @Test
     @DisplayName("check is successful if all is validate")

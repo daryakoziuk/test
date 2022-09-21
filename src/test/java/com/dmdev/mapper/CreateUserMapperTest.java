@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CreateUserMapperTest {
 
-    private CreateUserMapper createUserMapper = CreateUserMapper.getInstance();
+    private final CreateUserMapper createUserMapper = CreateUserMapper.getInstance();
 
     @Test
     @DisplayName("user will be returned if everything is correct")
@@ -51,9 +51,7 @@ public class CreateUserMapperTest {
                 .email("ira@gmail.com")
                 .build();
 
-        DateTimeParseException dateTimeParseException = assertThrows(DateTimeParseException.class,
+        assertThrows(DateTimeParseException.class,
                 () -> createUserMapper.map(userDto));
-
-        assertThat(dateTimeParseException.getMessage()).isNotEmpty();
     }
 }

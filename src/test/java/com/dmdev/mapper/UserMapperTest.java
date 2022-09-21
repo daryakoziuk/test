@@ -13,7 +13,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class UserMapperTest {
 
-    private UserMapper userMapper = UserMapper.getInstance();
+    private final UserMapper userMapper = UserMapper.getInstance();
 
     @Test
     @DisplayName("user will be mapped if all is correct")
